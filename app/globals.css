@@ -25,7 +25,6 @@ body {
   font-family: var(--font-geist-sans);
 }
 
-/* Enhanced Weather UI Styles */
 .glass-card {
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(24px);
@@ -58,14 +57,4 @@ body {
   font-size: clamp(4rem, 12vw, 7rem);
   line-height: 1;
   text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-}
-
-/* Mobile optimizations */
-@media (max-width: 640px) {
-  .glass-card {
-    padding: 1.5rem;
-  }
-  .current-temp {
-    font-size: clamp(3.5rem, 15vw, 6rem);
-  }
 }
