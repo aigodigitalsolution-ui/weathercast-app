@@ -39,6 +39,7 @@ const weatherCodeToDescription = (code: number): string => {
     81: 'Moderate rain showers',
     82: 'Violent rain showers',
     95: 'Thunderstorm',
+    // Add more as needed
   };
   return codes[code] || 'Unknown';
 };
@@ -53,12 +54,23 @@ const getWeatherIcon = (code: number): string => {
   return '🌥️';
 };
 
+const getBackgroundClass = (code: number): string => {
+  if (code === 0) return 'clear';
+  if ([1, 2, 3].includes(code)) return 'cloudy';
+  if ([45, 48].includes(code)) return 'cloudy';
+  if ([51, 53, 55, 61, 63, 65, 80, 81, 82, 95].includes(code)) return 'rain';
+  if ([71, 73, 75].includes(code)) return 'snow';
+  return '';
+};
+
 export default function WeatherApp() {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [location, setLocation] = useState<{ city: string; lat: number; lon: number } | null>(null);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchCity, setSearchCity] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
 
   // Update time every second
   useEffect(() => {
@@ -76,6 +88,7 @@ export default function WeatherApp() {
           const { latitude, longitude } = position.coords;
           
           try {
+            // Get city name using reverse geocoding (free service)
             const geoRes = await fetch(
               `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
             );
@@ -84,6 +97,7 @@ export default function WeatherApp() {
 
             setLocation({ city, lat: latitude, lon: longitude });
 
+            // Fetch weather from Open-Meteo
             const weatherRes = await fetch(
               `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto`
             );
@@ -162,7 +176,7 @@ export default function WeatherApp() {
   const daily = weather.daily;
 
   return (
-    <div className="min-h-screen weather-bg text-white overflow-hidden relative">
+    <div className={`min-h-screen weather-bg text-white overflow-hidden relative ${getBackgroundClass(current.weather_code)}`}>
       {/* Premium Header */}
       <header className="sticky top-0 z-50 p-5 sm:p-6 flex justify-between items-center border-b border-white/10 bg-black/80 backdrop-blur-2xl shadow-xl">
         <div className="flex items-center gap-3">
@@ -189,7 +203,7 @@ export default function WeatherApp() {
           </div>
         </div>
 
-        {/* Current Weather - Hero Card */}
+        {/* Current Weather - Hero Card - Enhanced GUI */}
         <div className="glass-card rounded-3xl p-8 sm:p-10 md:p-12 mb-10 sm:mb-12 relative overflow-hidden">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10 items-center">
             <div className="text-center md:text-left">
