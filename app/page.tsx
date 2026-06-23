@@ -39,7 +39,6 @@ const weatherCodeToDescription = (code: number): string => {
     81: 'Moderate rain showers',
     82: 'Violent rain showers',
     95: 'Thunderstorm',
-    // Add more as needed
   };
   return codes[code] || 'Unknown';
 };
@@ -77,7 +76,6 @@ export default function WeatherApp() {
           const { latitude, longitude } = position.coords;
           
           try {
-            // Get city name using reverse geocoding (free service)
             const geoRes = await fetch(
               `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
             );
@@ -86,7 +84,6 @@ export default function WeatherApp() {
 
             setLocation({ city, lat: latitude, lon: longitude });
 
-            // Fetch weather from Open-Meteo
             const weatherRes = await fetch(
               `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto`
             );
@@ -132,10 +129,10 @@ export default function WeatherApp() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-950 via-indigo-950 to-purple-950 flex items-center justify-center text-white">
+      <div className="min-h-screen bg-gradient-to-br from-blue-950 via-indigo-950 to-purple-950 flex items-center justify-center text-white px-6">
         <div className="text-center">
           <div className="animate-spin h-16 w-16 border-4 border-white border-t-transparent rounded-full mx-auto mb-6"></div>
-          <p className="text-2xl">Loading real-time weather...</p>
+          <p className="text-xl sm:text-2xl">Loading real-time weather...</p>
         </div>
       </div>
     );
@@ -143,14 +140,14 @@ export default function WeatherApp() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-950 via-indigo-950 to-purple-950 flex items-center justify-center text-white p-8">
+      <div className="min-h-screen bg-gradient-to-br from-blue-950 via-indigo-950 to-purple-950 flex items-center justify-center text-white p-6">
         <div className="text-center max-w-md">
-          <div className="text-6xl mb-6">🌤️</div>
-          <h1 className="text-4xl font-bold mb-4">Weather App</h1>
-          <p className="text-xl mb-8">{error}</p>
+          <div className="text-7xl mb-6">🌤️</div>
+          <h1 className="text-4xl font-bold mb-4">WeatherCast</h1>
+          <p className="text-lg sm:text-xl mb-8 text-white/90">{error}</p>
           <button 
             onClick={() => window.location.reload()}
-            className="px-8 py-3 bg-white text-black rounded-full font-medium hover:bg-gray-200 transition-colors"
+            className="px-10 py-3.5 bg-white text-black rounded-2xl font-semibold hover:bg-gray-100 active:bg-gray-200 transition-all shadow-lg"
           >
             Retry
           </button>
@@ -165,55 +162,55 @@ export default function WeatherApp() {
   const daily = weather.daily;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-950 via-indigo-950 to-purple-950 text-white overflow-hidden">
-      {/* Header */}
-      <header className="p-6 flex justify-between items-center border-b border-white/10">
+    <div className="min-h-screen weather-bg text-white overflow-hidden relative">
+      {/* Premium Header */}
+      <header className="sticky top-0 z-50 p-5 sm:p-6 flex justify-between items-center border-b border-white/10 bg-black/80 backdrop-blur-2xl shadow-xl">
         <div className="flex items-center gap-3">
           <div className="text-4xl">🌤️</div>
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">WeatherCast</h1>
-            <p className="text-sm text-white/70">Real-time forecasts</p>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">WeatherCast</h1>
+            <p className="text-xs sm:text-sm text-white/70">Real-time forecasts</p>
           </div>
         </div>
-        <div className="text-right">
-          <div className="text-sm text-white/70">Current Location</div>
-          <div className="font-medium">{location.city}</div>
+        <div className="text-right max-w-[140px] sm:max-w-none">
+          <div className="text-xs sm:text-sm text-white/70">Current Location</div>
+          <div className="font-medium text-sm sm:text-base truncate">{location.city}</div>
         </div>
       </header>
 
-      <div className="max-w-6xl mx-auto p-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
         {/* Current Time & Date */}
-        <div className="mb-12 text-center">
-          <div className="text-7xl font-mono tracking-[4px] mb-2 tabular-nums">
+        <div className="mb-10 sm:mb-12 text-center">
+          <div className="text-5xl sm:text-6xl md:text-7xl font-mono tracking-[3px] sm:tracking-[4px] mb-3 tabular-nums drop-shadow-md">
             {formatTime(currentTime)}
           </div>
-          <div className="text-2xl text-white/80 font-light">
+          <div className="text-xl sm:text-2xl text-white/80 font-light">
             {formatDate(currentTime)}
           </div>
         </div>
 
-        {/* Current Weather */}
-        <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-10 mb-12 border border-white/10">
-          <div className="grid md:grid-cols-2 gap-10 items-center">
-            <div>
-              <div className="text-8xl mb-4">{getWeatherIcon(current.weather_code)}</div>
-              <div className="text-7xl font-light tracking-tighter mb-2">
+        {/* Current Weather - Hero Card */}
+        <div className="glass-card rounded-3xl p-8 sm:p-10 md:p-12 mb-10 sm:mb-12 relative overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10 items-center">
+            <div className="text-center md:text-left">
+              <div className="text-7xl sm:text-8xl mb-4 transition-all">{getWeatherIcon(current.weather_code)}</div>
+              <div className="current-temp font-light tracking-[-4px] mb-3 drop-shadow-sm">
                 {Math.round(current.temperature_2m)}°C
               </div>
-              <div className="text-3xl text-white/80">{weatherCodeToDescription(current.weather_code)}</div>
-              <div className="text-lg mt-4 text-white/70">
-                Feels like {Math.round(current.apparent_temperature)}°C
+              <div className="text-2xl sm:text-3xl text-white/80 capitalize">{weatherCodeToDescription(current.weather_code)}</div>
+              <div className="text-base sm:text-lg mt-4 text-white/70">
+                Feels like <span className="font-medium">{Math.round(current.apparent_temperature)}°C</span>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-6 text-lg">
-              <div className="bg-white/5 rounded-2xl p-6">
-                <div className="text-white/60 text-sm mb-1">HUMIDITY</div>
-                <div className="text-4xl font-medium">{current.relative_humidity_2m}%</div>
+            <div className="grid grid-cols-2 gap-4 sm:gap-6 text-lg">
+              <div className="bg-white/10 hover:bg-white/15 rounded-3xl p-5 sm:p-6 transition-all border border-white/10">
+                <div className="text-white/60 text-xs sm:text-sm mb-2 tracking-widest">HUMIDITY</div>
+                <div className="text-4xl sm:text-5xl font-medium tabular-nums">{current.relative_humidity_2m}<span className="text-2xl">%</span></div>
               </div>
-              <div className="bg-white/5 rounded-2xl p-6">
-                <div className="text-white/60 text-sm mb-1">WIND</div>
-                <div className="text-4xl font-medium">{Math.round(current.wind_speed_10m)} <span className="text-base">km/h</span></div>
+              <div className="bg-white/10 hover:bg-white/15 rounded-3xl p-5 sm:p-6 transition-all border border-white/10">
+                <div className="text-white/60 text-xs sm:text-sm mb-2 tracking-widest">WIND</div>
+                <div className="text-4xl sm:text-5xl font-medium tabular-nums">{Math.round(current.wind_speed_10m)}<span className="text-xl"> km/h</span></div>
               </div>
             </div>
           </div>
@@ -225,14 +222,14 @@ export default function WeatherApp() {
             7-Day Forecast
             <span className="text-sm font-normal text-white/60">Open-Meteo</span>
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4 sm:gap-5">
             {daily.time.slice(0, 7).map((dateStr, index) => {
               const date = new Date(dateStr);
               const isToday = index === 0;
               return (
                 <div 
                   key={index} 
-                  className="bg-white/5 backdrop-blur-xl rounded-3xl p-6 border border-white/10 hover:border-white/30 transition-all group"
+                  className="glass-card rounded-3xl p-6 sm:p-7 border border-white/10 hover:border-white/30 hover:-translate-y-1 transition-all duration-300 group active:scale-[0.985] flex flex-col"
                 >
                   <div className="text-center">
                     <div className="text-sm text-white/60 mb-1">
@@ -242,7 +239,7 @@ export default function WeatherApp() {
                       {date.getDate()}
                     </div>
                     
-                    <div className="text-5xl mb-6 transition-transform group-hover:scale-110">
+                    <div className="text-5xl sm:text-6xl mb-6 transition-transform group-hover:scale-110 duration-300">
                       {getWeatherIcon(daily.weather_code[index])}
                     </div>
                     
