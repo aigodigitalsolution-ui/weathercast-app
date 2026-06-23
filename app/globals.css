@@ -59,3 +59,13 @@ body {
   line-height: 1;
   text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  .glass-card {
+    padding: 1.5rem;
+  }
+  .current-temp {
+    font-size: clamp(3.5rem, 15vw, 6rem);
+  }
+}
