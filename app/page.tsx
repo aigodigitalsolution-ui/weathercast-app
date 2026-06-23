@@ -39,7 +39,6 @@ const weatherCodeToDescription = (code: number): string => {
     81: 'Moderate rain showers',
     82: 'Violent rain showers',
     95: 'Thunderstorm',
-    // Add more as needed
   };
   return codes[code] || 'Unknown';
 };
@@ -69,8 +68,6 @@ export default function WeatherApp() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [searchCity, setSearchCity] = useState('');
-  const [isSearching, setIsSearching] = useState(false);
 
   // Update time every second
   useEffect(() => {
@@ -88,7 +85,6 @@ export default function WeatherApp() {
           const { latitude, longitude } = position.coords;
           
           try {
-            // Get city name using reverse geocoding (free service)
             const geoRes = await fetch(
               `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
             );
@@ -97,7 +93,6 @@ export default function WeatherApp() {
 
             setLocation({ city, lat: latitude, lon: longitude });
 
-            // Fetch weather from Open-Meteo
             const weatherRes = await fetch(
               `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto`
             );
