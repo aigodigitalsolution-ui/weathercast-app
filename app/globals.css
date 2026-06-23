@@ -35,7 +35,24 @@ body {
 
 .weather-bg {
   background: linear-gradient(135deg, #0f172a 0%, #1e2937 50%, #334155 100%);
+  transition: background 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
 }
+
+.weather-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 30%, rgba(255,255,255,0.08) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.weather-bg.clear { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); }
+.weather-bg.cloudy { background: linear-gradient(135deg, #334155 0%, #64748b 100%); }
+.weather-bg.rain { background: linear-gradient(135deg, #1e2937 0%, #475569 100%); }
+.weather-bg.snow { background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 40%, #1e40af 100%); }
 
 .current-temp {
   font-size: clamp(4rem, 12vw, 7rem);
